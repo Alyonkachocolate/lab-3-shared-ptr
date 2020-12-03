@@ -135,7 +135,6 @@ auto SharedPtr<T>::get() -> T* {
 
 template <typename T>
 void SharedPtr<T>::reset() noexcept {
-  ptr_ = nullptr;
   (*counter_)--;
   if (*counter_ == 0) {
     delete ptr_;
@@ -147,7 +146,6 @@ void SharedPtr<T>::reset() noexcept {
 
 template <typename T>
 void SharedPtr<T>::reset(T* ptr) {
-  ptr_ = nullptr;
   (*counter_)--;
   if (*counter_ == 0) {
     delete ptr_;
