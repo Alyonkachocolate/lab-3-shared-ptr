@@ -31,8 +31,8 @@ add_library(lab-3-shared-ptr INTERFACE)
 add_executable(demo
         ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/sources/SharedPtr.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/SharedPtr.h
         )
+
 add_executable(tests
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
         )
