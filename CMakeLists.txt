@@ -14,12 +14,11 @@ set(
 include("tools/gate/cmake/HunterGate.cmake")
 
 HunterGate(
-        URL "https://github.com/cpp-pm/hunter/archive/v0.23.218.tar.gz"
-        SHA1 "9a3594a61227967fb92159339ba326701b287b19"
+        URL "https://github.com/cpp-pm/hunter/archive/v0.23.278.tar.gz"
+        SHA1 "35fa55bc1dfcf9f4d7264f8bb26cd1759ce1ae07"
 )
 
-project(lab-3-shared-ptr-lib)
-project(lab-3-shared-ptr-app)
+project(lab-3-shared-ptr)
 string(APPEND CMAKE_CXX_FLAGS " -pedantic -Werror -Wall -Wextra")
 string(APPEND CMAKE_CXX_FLAGS " -Wno-unused-command-line-argument")
 string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
@@ -27,46 +26,31 @@ string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
 hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
 
-add_library(lab-3-shared-ptr-lib STATIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/
-        sources/SharedPtr.cpp include/SharedPtr.h)
+add_library(lab-3-shared-ptr INTERFACE)
 
-add_executable(lab-3-shared-ptr-app
-        ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp)
-target_link_libraries(lab-3-shared-ptr-app
-        lab-3-shared-ptr-lib)
-
+add_executable(demo
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/sources/SharedPtr.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/SharedPtr.h
+        )
 add_executable(tests
         ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
         )
 
-target_include_directories(lab-3-shared-ptr-lib
-        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-        )
-target_include_directories(lab-3-shared-ptr-app
-        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+target_include_directories(lab-3-shared-ptr
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include
         )
 
-target_include_directories(tests
-        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-        )
-
-target_link_libraries(tests GTest::main lab-3-shared-ptr-lib)
+target_link_libraries(tests GTest::gtest_main lab-3-shared-ptr)
 
 enable_testing()
 add_test(NAME unit_tests COMMAND tests)
 
 if (BUILD_COVERAGE)
-    function(ENABLE_PROJECT_COVERAGE PROJECT)
-        target_compile_options(${PROJECT} PRIVATE --coverage)
-        target_link_libraries(${PROJECT} --coverage)
-    endfunction()
-
     set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
     find_package(codecov)
-    enable_project_coverage(lab-3-shared-ptr-lib)
-    enable_project_coverage(tests)
+    add_coverage(tests)
     list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
     coverage_evaluate()
 endif ()
