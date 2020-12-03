@@ -3,6 +3,7 @@
 #ifndef LAB_3_SHARED_PTR_APP_SHAREDPTR_H
 #define LAB_3_SHARED_PTR_APP_SHAREDPTR_H
 
+#include <atomic>
 #include <iostream>
 
 template <typename T>
